@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+<!-- Title -->
+{% block title %} L1000NGS {% endblock %}
+
+<!-- Head -->
+{% block head %}
+<style>
+    [name="notebook-iframe"] {
+        border: none !important;
+        min-height: 1000px;
+    }
+</style>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="mt-5">
+
+    <div class="results text-center mt-5 pt-5 huge light">Loading Notebook...</div>
+    <button type="submit" form="download-form" target="_blank" class="btn btn-primary results d-none">Download Notebook</button>
+
+    <iframe id="iframe" name="notebook-iframe" class="w-100 d-none results" onload="load_message();">
+    </iframe>
+
+    <!-- Generate Notebook Form -->
+    <form id="notebook-form" action="{{ url_for('notebook_api') }}" method="post" target="notebook-iframe">
+        <input name="request_type" type="hidden" value="html">
+        <input name="rids" type="hidden" value="{{ rids }}">
+    </form>
+
+    <!-- Download Notebook Form -->
+    <form id="download-form" action="{{ url_for('notebook_api') }}" method="post">
+        <input name="request_type" type="hidden" value="ipynb">
+        <input name="rids" type="hidden" value="{{ rids }}">
+    </form>
+
+</div>
+
+
+{% endblock %}
+
+<!-- Footer -->
+{% block footer %}
+<script>
+
+// Load message
+function load_message() {
+    // Toggle results
+    $('.results').toggleClass('d-none');
+
+    // Height
+    var iFrameID = document.getElementById('iframe');
+    if (iFrameID) {
+        // here you can make the height, I delete it first, then I make it again
+        iFrameID.height = "";
+        iFrameID.height = (iFrameID.contentWindow.document.body.scrollHeight + 50) + "px";
+    }   
+}
+
+// Submit form
+$(function(){
+    $('#notebook-form').submit();
+})
+</script>
+{% endblock %}

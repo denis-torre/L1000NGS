@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+<!-- Title -->
+{% block title %} L1000NGS {% endblock %}
+
+<!-- Head -->
+{% block head %}
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="mt-5">
+
+	<!-- DataTable -->
+	<table id="sample-table" class="table table-striped w-100">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Name</th>
+				<th>Perturbation ID</th>
+				<th>Batch</th>
+				<th>Cell Line</th>
+				<th>Dose</th>
+				<th>Time</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+		<tfoot>
+			<tr>
+				<th></th>
+				<th>Name</th>
+				<th>Perturbation ID</th>
+				<th>Batch</th>
+				<th>Cell Line</th>
+				<th>Dose</th>
+				<th>Time</th>
+			</tr>
+		</tfoot>
+	</table>
+
+	<!-- Button -->
+	<button class="btn btn-primary" onclick="analyze();">Submit</button>
+
+</div>
+
+
+{% endblock %}
+
+<!-- Footer -->
+{% block footer %}
+<script>
+	$(function(){
+
+		// Datatable
+		$('#sample-table').dataTable({
+			"ajax": "{{ url_for('metadata_api') }}",
+			"columns": [
+				{"data": "checkbox", "orderable": false, "className": "select-checkbox"},
+				{"data": "pert_desc"},
+				{"data": "pert_id"},
+				{"data": "batch"},
+				{"data": "cell_id"},
+				{"data": "pert_dose"},
+				{"data": "pert_time"}
+			],
+			"select": {
+				"style": 'multi'
+			},
+			fnCreatedRow: function (nRow, aData, iDataIndex) {
+				$(nRow).attr('data-rid', aData['rid']); // or whatever you choose to set as the id
+			},
+			initComplete: function () {
+				this.api().columns().every(function () {
+					var column = this;
+					if (column.index() > 0) {
+						var select = $('<select class="gtex-sample-filter"><option value=""></option></select>')
+							.appendTo($(column.footer()).empty())
+							.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+
+								column
+									.search(val ? '^' + val + '$' : '', true, false)
+									.draw();
+							});
+
+						column.data().unique().sort().each(function (d, j) {
+							select.append('<option value="' + d + '">' + d + '</option>')
+						});
+					}
+				});
+			}
+		});
+
+		// Submit
+		analyze = function() {
+
+			// Get IDs
+			var ids = Array.from($('tr.selected').map(function(index, elem){return $(elem).data('rid')}));
+
+			// Check length
+			if (ids.length < 3) {
+				alert('Please select at least three signatures using the checkboxes provided in the table.');
+			} else {
+				var $form = $('<form>', {'method': 'post', 'action': '{{ url_for("analyze") }}', 'class': 'd-none'}).html($('<input>', {'name': 'rid_list', 'type': 'hidden', 'value': ids.join(',')}));
+				$('body').append($form);
+				$form.submit();
+			}
+		}
+	})
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+Flask
+uwsgi
+pandas
+h5py
+jupyter_client
+nbformat
+nbconvert
+ipykernel
+requests
+plotly
+seaborn
+matplotlib
+sklearn
