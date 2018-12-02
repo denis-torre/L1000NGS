@@ -8,36 +8,79 @@
 <style>
     iframe {
         border: none !important;
-        min-height: 1000px;
+        min-height: 5000px;
+        width: 100%;
     }
+
+    #notebook-wrapper {
+        width: 1300px;
+        margin-left: -95px;
+    }
+
+    #example-text {
+        background-color: rgba(255,255,255,0.85);
+    }
+
+    .fa-spinner {
+        color: rgba(0,0,0,0.15)
+    }
+
+
 </style>
 {% endblock %}
 
 <!-- Content -->
 {% block content %}
-<div class="mt-5" style="width: 1200px;">
 
-    <button type="submit" form="download-form" target="_blank" class="btn btn-primary results d-none">Download Notebook</button>
+    <!-- Intro -->
+    <div class="mb-3 small">
+        <div class="very-large">
+            <b>Results Notebook</b>
+            <button type="submit" form="download-form" target="_blank" class="btn btn-primary results float-right" disabled>Download Notebook</button>
+        </div>
+        <hr width="100%" class="mt-2 mb-3">
+    </div>
 
-    <iframe id="example-iframe" class="w-100" style="max-width: 1500px;" onload="iframeHeight('example-iframe');" src="{{ url_for('static', filename='notebooks/l1000ngs-sample.html', _external=True) }}">
-    </iframe>
 
-    <iframe id="iframe" name="notebook-iframe" class="w-100 results" onload="load_message();" style="max-width: 1500px;" src="{{ url_for('static', filename='notebooks/l1000ngs-sample.html', _external=True) }}">
-    </iframe>
+    <!-- Loader Text -->
+    <div id="example-text" class="position-sticky fixed-top text-center light pt-5 pb-5 intro-text">
+        <div class="very-large mb-2">Your notebook will be ready shortly.</div>
+        <div class="medium">In the meantime, you may browse an example notebook below.</div>
+        <i class="fas fa-spinner fa-spin fa-3x mt-4"></i>
+        <button id="view-notebook" class="btn btn-primary d-none mt-4" onclick="display_results_iframe();">View Results</button>
+    </div>
 
-    <!-- Generate Notebook Form -->
-    <form id="notebook-form" action="{{ url_for('notebook_api') }}" method="post" target="notebook-iframe">
-        <input name="request_type" type="hidden" value="html">
-        <input name="rids" type="hidden" value="{{ rids }}">
-    </form>
+    <!-- Description -->
+    <div id="description-text" class="intro-text d-none">
+        Your notebook has been generated and is ready below.
 
-    <!-- Download Notebook Form -->
-    <form id="download-form" action="{{ url_for('notebook_api') }}" method="post">
-        <input name="request_type" type="hidden" value="ipynb">
-        <input name="rids" type="hidden" value="{{ rids }}">
-    </form>
+        You may download the notebook using the download button in the top right corner. To run the notebook, you will need a Jupyter Server and basic requirements which are available here.
+    </div>
+    
+    
+    <div id="notebook-wrapper">
 
-</div>
+        <!-- Example Notebook -->
+        <iframe id="example-iframe" src="{{ url_for('static', filename='notebooks/l1000ngs-sample.html', _external=True) }}">
+        </iframe>
+
+        <!-- Results -->
+        <iframe id="results-iframe" name="notebook-iframe" onload="display_results_button();" class="d-none">
+        </iframe>
+
+        <!-- Generate Notebook Form -->
+        <form id="notebook-form" action="{{ url_for('notebook_api') }}" method="post" target="notebook-iframe">
+            <input name="request_type" type="hidden" value="html">
+            <input name="rids" type="hidden" value="{{ rids }}">
+        </form>
+
+        <!-- Download Notebook Form -->
+        <form id="download-form" action="{{ url_for('notebook_api') }}" method="post">
+            <input name="request_type" type="hidden" value="ipynb">
+            <input name="rids" type="hidden" value="{{ rids }}">
+        </form>
+
+    </div>
 
 
 {% endblock %}
@@ -46,30 +89,26 @@
 {% block footer %}
 <script>
 
-    // Fix iframe height
-    function iframeHeight(id) {
-        var iFrameID = document.getElementById(id);
-        if (iFrameID) {
-            // here you can make the height, I delete it first, then I make it again
-            iFrameID.height = "";
-            iFrameID.height = (iFrameID.contentWindow.document.body.scrollHeight + 50) + "px";
-        }   
+    // Display Results Button
+    function display_results_button() {
+        $('#view-notebook').removeClass('d-none');
+        $('.fa-spinner').addClass('d-none');
+        $('#example-text div:nth-child(1)').html('Your notebook is ready.');
+        $('#example-text div:nth-child(2)').html('To view the results, click the button below.');
     }
 
+    // Display Results Iframe
+    function display_results_iframe() {
+        $('iframe').toggleClass('d-none');
+        $('button[form="download-form"]').removeAttr('disabled');
+        $('.intro-text').toggleClass('d-none');
+        $("html, body").animate({ scrollTop: 0 });
+    }
 
+    $(function(){
+        // Submit form
+        $('#notebook-form').submit();
+    })
 
-
-// Load message
-// function load_message() {
-//     // Toggle results
-//     $('.results').toggleClass('d-none');
-
-// }
-
-// Submit form
-$(function(){
-
-
-})
 </script>
 {% endblock %}

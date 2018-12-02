@@ -155,7 +155,7 @@ def notebook_api():
 		ep = ExecutePreprocessor(timeout=600)#, kernel_name='venv')
 
 		# Execute
-		ep.preprocess(notebook, {'metadata': {'path': '.'}})
+		# ep.preprocess(notebook, {'metadata': {'path': '.'}})
 
 		# Convert
 		notebook_html = html_exporter_with_figs.from_notebook_node(notebook)[0]
