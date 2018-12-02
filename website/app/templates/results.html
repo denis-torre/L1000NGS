@@ -6,7 +6,7 @@
 <!-- Head -->
 {% block head %}
 <style>
-    [name="notebook-iframe"] {
+    iframe {
         border: none !important;
         min-height: 1000px;
     }
@@ -15,12 +15,14 @@
 
 <!-- Content -->
 {% block content %}
-<div class="mt-5">
+<div class="mt-5" style="width: 1200px;">
 
-    <div class="results text-center mt-5 pt-5 huge light">Loading Notebook...</div>
     <button type="submit" form="download-form" target="_blank" class="btn btn-primary results d-none">Download Notebook</button>
 
-    <iframe id="iframe" name="notebook-iframe" class="w-100 d-none results" onload="load_message();" style="max-width: 1500px;">
+    <iframe id="example-iframe" class="w-100" style="max-width: 1500px;" onload="iframeHeight('example-iframe');" src="{{ url_for('static', filename='notebooks/l1000ngs-sample.html', _external=True) }}">
+    </iframe>
+
+    <iframe id="iframe" name="notebook-iframe" class="w-100 results" onload="load_message();" style="max-width: 1500px;" src="{{ url_for('static', filename='notebooks/l1000ngs-sample.html', _external=True) }}">
     </iframe>
 
     <!-- Generate Notebook Form -->
@@ -44,23 +46,30 @@
 {% block footer %}
 <script>
 
-// Load message
-function load_message() {
-    // Toggle results
-    $('.results').toggleClass('d-none');
+    // Fix iframe height
+    function iframeHeight(id) {
+        var iFrameID = document.getElementById(id);
+        if (iFrameID) {
+            // here you can make the height, I delete it first, then I make it again
+            iFrameID.height = "";
+            iFrameID.height = (iFrameID.contentWindow.document.body.scrollHeight + 50) + "px";
+        }   
+    }
 
-    // Height
-    var iFrameID = document.getElementById('iframe');
-    if (iFrameID) {
-        // here you can make the height, I delete it first, then I make it again
-        iFrameID.height = "";
-        iFrameID.height = (iFrameID.contentWindow.document.body.scrollHeight + 50) + "px";
-    }   
-}
+
+
+
+// Load message
+// function load_message() {
+//     // Toggle results
+//     $('.results').toggleClass('d-none');
+
+// }
 
 // Submit form
 $(function(){
-    $('#notebook-form').submit();
+
+
 })
 </script>
 {% endblock %}
