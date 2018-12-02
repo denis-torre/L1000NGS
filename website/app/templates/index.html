@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 <!-- Title -->
-{% block title %} L1000NGS {% endblock %}
+{% block title %} L1000 Notebook Generator {% endblock %}
 
 <!-- Head -->
 {% block head %}
@@ -9,38 +9,56 @@
 
 <!-- Content -->
 {% block content %}
-<div class="mt-5">
+<div>
 
-	<!-- DataTable -->
-	<table id="sample-table" class="table table-striped w-100">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Name</th>
-				<th>Perturbation ID</th>
-				<th>Batch</th>
-				<th>Cell Line</th>
-				<th>Dose</th>
-				<th>Time</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-		<tfoot>
-			<tr>
-				<th></th>
-				<th>Name</th>
-				<th>Perturbation ID</th>
-				<th>Batch</th>
-				<th>Cell Line</th>
-				<th>Dose</th>
-				<th>Time</th>
-			</tr>
-		</tfoot>
-	</table>
+	<!-- Step 2 -->
+	<div class="step-2">
+		<div class="h2 light">Generate Interactive Jupyter Notebooks from L1000 Signatures</div>
+		<hr width="100%">
+		<div class="h4 very-light">The L1000 Notebook Generator is an interactive web application that allows users to produce a customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
+	</div>
 
-	<!-- Button -->
-	<button class="btn btn-primary" onclick="analyze();">Submit</button>
+	<!-- Step 1 -->
+	<div class="step-1 d-none">
 
+		<!-- Intro -->
+		<div>
+			<div class="h2 light">Step 1. Select L1000 Signatures</div>
+			<hr width="100%">
+			<div class="h5 light">The L1000 Notebook Generator is an interactive web applications that allows users to produce a customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
+		</div>
+
+		<!-- DataTable -->
+		<table id="sample-table" class="table table-striped w-100">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Name</th>
+					<th>Perturbation ID</th>
+					<th>Batch</th>
+					<th>Cell Line</th>
+					<th>Dose</th>
+					<th>Time</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+			<tfoot>
+				<tr>
+					<th></th>
+					<th>Name</th>
+					<th>Perturbation ID</th>
+					<th>Batch</th>
+					<th>Cell Line</th>
+					<th>Dose</th>
+					<th>Time</th>
+				</tr>
+			</tfoot>
+		</table>
+
+		<!-- Button -->
+		<button class="btn btn-primary" onclick="analyze();">Submit</button>
+
+	</div>
 </div>
 
 
@@ -49,10 +67,10 @@
 <!-- Footer -->
 {% block footer %}
 <script>
-	$(function(){
+	// $(function(){
 
 		// Datatable
-		$('#sample-table').dataTable({
+		var SampleTable = $('#sample-table').DataTable({
 			"ajax": "{{ url_for('metadata_api') }}",
 			"columns": [
 				{"data": "checkbox", "orderable": false, "className": "select-checkbox"},
@@ -73,7 +91,7 @@
 				this.api().columns().every(function () {
 					var column = this;
 					if (column.index() > 0) {
-						var select = $('<select class="gtex-sample-filter"><option value=""></option></select>')
+						var select = $('<select style="max-width: 300px;"><option value=""></option></select>')
 							.appendTo($(column.footer()).empty())
 							.on('change', function () {
 								var val = $.fn.dataTable.util.escapeRegex(
@@ -93,11 +111,12 @@
 			}
 		});
 
+		console.log(SampleTable.rows());
 		// Submit
 		analyze = function() {
 
 			// Get IDs
-			var ids = Array.from($('tr.selected').map(function(index, elem){return $(elem).data('rid')}));
+			var ids = Array.from(SampleTable.rows({ selected: true }).data().map(function (data) { return data['rid'] }));
 
 			// Check length
 			if (ids.length < 3) {
@@ -108,6 +127,6 @@
 				$form.submit();
 			}
 		}
-	})
+	// })
 </script>
 {% endblock %}

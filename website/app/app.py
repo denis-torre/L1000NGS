@@ -103,7 +103,7 @@ def analyze():
 def metadata_api():
 	
 	# Read data
-	dataframe = pd.read_table('app/static/data/signature_metadata.txt').head(50)
+	dataframe = pd.read_table('app/static/data/signature_metadata.txt')#.head(50)
 	dataframe['checkbox'] = ''
 
 	# Return JSON
@@ -142,7 +142,7 @@ def notebook_api():
 		
 		# Initialize preprocess
 		print('executing...')
-		ep = ExecutePreprocessor(timeout=600, kernel_name='venv')
+		ep = ExecutePreprocessor(timeout=600)#, kernel_name='venv')
 
 		# Execute
 		ep.preprocess(notebook, {'metadata': {'path': '.'}})

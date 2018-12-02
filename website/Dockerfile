@@ -12,13 +12,15 @@ RUN apt-get update && apt-get install -y python3 \
  uwsgi-plugin-python3
 
 RUN mkdir -p /website/app /data
+WORKDIR /website
 
-COPY requirements.txt /
-RUN virtualenv -p /usr/bin/python3 /venv/; . /venv/bin/activate && pip3 install -r requirements.txt;
-RUN . /venv/bin/activate && python -m ipykernel install --user --name venv --display-name "python3-venv";
+COPY requirements.txt .
+RUN virtualenv -p /usr/bin/python3 venv/; . venv/bin/activate && pip3 install -r requirements.txt;
+RUN . venv/bin/activate && python -m ipykernel install --user --name venv --display-name "python3-venv";
 
-COPY boot.sh wsgi.py /website/
-COPY app /website/app
-RUN chmod +x /website/boot.sh; rm -r /website/app/static/data; ln -s /data /website/app/static/data; chmod -R 777 /root;
+COPY data /data
+COPY boot.sh wsgi.py ./
+COPY app ./app
+RUN chmod +x boot.sh; rm -r app/static/data; ln -s /data app/static/data;
 
-ENTRYPOINT cd website; ./boot.sh
+ENTRYPOINT ./boot.sh

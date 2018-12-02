@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 root=/website
-user=r
+user=root
 log=$root/error.log
 
 function setup {
@@ -15,7 +15,7 @@ cat << EOF | tee -a $root/wsgi.ini >> $log
 uid = $user
 gid = $user
 
-home = /venv
+home = /website/venv
 plugins = python3
 
 master = true
