@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="//cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <!-- Style -->
     <style>
@@ -20,7 +21,9 @@
       nav, #content, footer { flex-shrink: 0; }
       .black { color: black !important; }
       .light { font-weight: 300; }
+      .very-light { font-weight: 100; }
       .huge { font-size: 30pt; }
+      .very-large { font-size: 23pt; }
       .large { font-size: 17pt; }
       .medium { font-size: 14pt; }
       .small { font-size: 11pt; }
@@ -31,7 +34,7 @@
     {% block head %}{% endblock %}
 
 </head>
-<body class="h-100 light">
+<body class="h-100">
 
     <!-- Wrapper -->
     <div id="wrapper">
@@ -44,14 +47,14 @@
   
       <!-- Content -->
       <div id="content">
-        <div class="container small pt-5">
+        <div class="container small light pt-5">
           {% block content %}{% endblock %}
         </div>
       </div>
   
       <!-- Footer -->
       <footer class="footer">
-        <div class="container py-4">
+        <div class="container mt-5 py-4">
           <div class="row">
             <!-- Affiliations Column -->
             <div class="col-4">

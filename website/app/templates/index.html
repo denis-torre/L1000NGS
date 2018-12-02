@@ -12,53 +12,13 @@
 <div>
 
 	<!-- Step 2 -->
-	<div class="step-2">
-		<div class="h2 light">Generate Interactive Jupyter Notebooks from L1000 Signatures</div>
-		<hr width="100%">
-		<div class="h4 very-light">The L1000 Notebook Generator is an interactive web application that allows users to produce a customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
+	<div class="intro">
+		<div class="h2 light mb-3">Generate Interactive Notebooks from L1000 Data</div>
+		<div class="h5 light pr-5">The L1000 Notebook Generator is an interactive web application that allows users to produce customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
+		<div class="h5 light pr-5"></div>
+		<a class="btn btn-primary" href="{{ url_for('analyze') }}">Get Started</a>
 	</div>
 
-	<!-- Step 1 -->
-	<div class="step-1 d-none">
-
-		<!-- Intro -->
-		<div>
-			<div class="h2 light">Step 1. Select L1000 Signatures</div>
-			<hr width="100%">
-			<div class="h5 light">The L1000 Notebook Generator is an interactive web applications that allows users to produce a customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
-		</div>
-
-		<!-- DataTable -->
-		<table id="sample-table" class="table table-striped w-100">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Name</th>
-					<th>Perturbation ID</th>
-					<th>Batch</th>
-					<th>Cell Line</th>
-					<th>Dose</th>
-					<th>Time</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-			<tfoot>
-				<tr>
-					<th></th>
-					<th>Name</th>
-					<th>Perturbation ID</th>
-					<th>Batch</th>
-					<th>Cell Line</th>
-					<th>Dose</th>
-					<th>Time</th>
-				</tr>
-			</tfoot>
-		</table>
-
-		<!-- Button -->
-		<button class="btn btn-primary" onclick="analyze();">Submit</button>
-
-	</div>
 </div>
 
 

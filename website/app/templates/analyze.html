@@ -1,39 +1,91 @@
 {% extends 'base.html' %}
 
 <!-- Title -->
-{% block title %} L1000NGS {% endblock %}
+{% block title %} L1000 Notebook Generator {% endblock %}
 
 <!-- Head -->
 {% block head %}
 <style>
-    [name="notebook-iframe"] {
-        border: none !important;
-        min-height: 1000px;
-    }
+.dataTables_wrapper {
+    display: none;
+    margin-left: -125px;
+}
+.table-loader{
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-size: 37pt;
+    font-weight: 300;
+    padding-top: 125px;
+    width: 1250px !important;
+    margin-left: -125px;
+    height: 387px;
+    background-image:
+    linear-gradient( rgba(235, 235, 235, 1) 1px, transparent 0 ),
+    linear-gradient(90deg, rgba(235, 235, 235, 1) 1px, transparent 0 ),
+    linear-gradient( 90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 15%, rgba(255, 255, 255, 0) 30% ),
+    linear-gradient( rgba(240, 240, 242, 1) 35px, transparent 0 );
+    background-repeat: repeat;
+    background-size:
+        1px 35px,
+        calc(100% * 0.1666666666) 1px,
+    30% 100%,
+    2px 70px;
+    background-position:
+        0 0,
+    0 0,
+    0 0,
+        0 0;
+}
+
 </style>
 {% endblock %}
 
 <!-- Content -->
 {% block content %}
-<div class="mt-5">
+<div class="px-5 text-justify">
 
-    <div class="results text-center mt-5 pt-5 huge light">Loading Notebook...</div>
-    <button type="submit" form="download-form" target="_blank" class="btn btn-primary results d-none">Download Notebook</button>
+    <!-- Intro -->
+    <div class="mb-5 small">
+        <div class="very-large">
+            <b>Step 1.</b><span class="light"> Select Gene Expression Signatures</span>
+            <button class="btn btn-primary submit float-right" onclick="analyze();">Generate Notebook <i class="fa fa-angle-right ml-2"></i></button>
+        </div>
+        <hr width="100%">
+        <div class="mb-3">Using the table below, <b>select at least three signatures</b> from over 16,000 drug and small-molecule induced gene expression signatures across multiple cell types, time points and concentrations</b>.
+            The selected signatures will be used to <b>generate a custom Jupyter Notebook</b> containing an interactive analysis of such data.</div>
+        <div class="mb-3">To select signatures, <b>use the checkboxes</b> displayed on the left column. You may filter the table using the dropdown menus on the bottom, or find desired signatures using the search bar.</div>
+    </div>
 
-    <iframe id="iframe" name="notebook-iframe" class="w-100 d-none results" onload="load_message();" style="max-width: 1500px;">
-    </iframe>
-
-    <!-- Generate Notebook Form -->
-    <form id="notebook-form" action="{{ url_for('notebook_api') }}" method="post" target="notebook-iframe">
-        <input name="request_type" type="hidden" value="html">
-        <input name="rids" type="hidden" value="{{ rids }}">
-    </form>
-
-    <!-- Download Notebook Form -->
-    <form id="download-form" action="{{ url_for('notebook_api') }}" method="post">
-        <input name="request_type" type="hidden" value="ipynb">
-        <input name="rids" type="hidden" value="{{ rids }}">
-    </form>
+    <!-- DataTable -->
+    <div class="table-loader w-100">
+        <div>Loading signatures...</div>
+        <div class="small very-light">The process may take up to 15 seconds.</div>
+    </div>
+    <table id="sample-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Perturbation ID</th>
+                <th>Batch</th>
+                <th>Cell Line</th>
+                <th>Dose</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Perturbation ID</th>
+                <th>Batch</th>
+                <th>Cell Line</th>
+                <th>Dose</th>
+                <th>Time</th>
+            </tr>
+        </tfoot>
+    </table>
 
 </div>
 
@@ -44,23 +96,68 @@
 {% block footer %}
 <script>
 
-// Load message
-function load_message() {
-    // Toggle results
-    $('.results').toggleClass('d-none');
+		// Datatable
+		var SampleTable = $('#sample-table').DataTable({
+			"ajax": "{{ url_for('metadata_api') }}",
+			"columns": [
+				{"data": "checkbox", "orderable": false, "className": "select-checkbox"},
+				{"data": "pert_desc"},
+				{"data": "pert_id"},
+				{"data": "batch"},
+				{"data": "cell_id"},
+				{"data": "pert_dose"},
+				{"data": "pert_time"}
+			],
+			"select": {
+				"style": 'multi'
+			},
+			fnCreatedRow: function (nRow, aData, iDataIndex) {
+				$(nRow).attr('data-rid', aData['rid']); // or whatever you choose to set as the id
+			},
+			initComplete: function () {
+                // Add selectors
+				this.api().columns().every(function () {
+					var column = this;
+					if (column.index() > 0) {
+						var select = $('<select style="max-width: 300px;"><option value=""></option></select>')
+							.appendTo($(column.footer()).empty())
+							.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
 
-    // Height
-    var iFrameID = document.getElementById('iframe');
-    if (iFrameID) {
-        // here you can make the height, I delete it first, then I make it again
-        iFrameID.height = "";
-        iFrameID.height = (iFrameID.contentWindow.document.body.scrollHeight + 50) + "px";
-    }   
-}
+								column
+									.search(val ? '^' + val + '$' : '', true, false)
+									.draw();
+							});
 
-// Submit form
-$(function(){
-    $('#notebook-form').submit();
-})
+						column.data().unique().sort().each(function (d, j) {
+							select.append('<option value="' + d + '">' + d + '</option>')
+						});
+					}
+				});
+
+                // Show table
+                $(".table-loader").css('display', 'none');
+                $(".dataTables_wrapper").css('display', 'block');
+			}
+		});
+
+		// Submit
+		analyze = function() {
+
+			// Get IDs
+			var ids = Array.from(SampleTable.rows({ selected: true }).data().map(function (data) { return data['rid'] }));
+
+			// Check length
+			if (ids.length < 3) {
+				alert('Please select at least three signatures using the checkboxes provided in the table.');
+			} else {
+				var $form = $('<form>', {'method': 'post', 'action': '{{ url_for("results") }}', 'class': 'd-none'}).html($('<input>', {'name': 'rid_list', 'type': 'hidden', 'value': ids.join(',')}));
+				$('body').append($form);
+				$form.submit();
+			}
+		}
+	// })
 </script>
 {% endblock %}

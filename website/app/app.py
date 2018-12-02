@@ -79,8 +79,18 @@ def index():
 ########## 2. Analyze
 #############################################
 
-@app.route('/analyze', methods=['GET', 'POST'])
+@app.route('/analyze')
 def analyze():
+
+	# Return JSON
+	return render_template('analyze.html')
+
+#############################################
+########## 3. Results
+#############################################
+
+@app.route('/results', methods=['GET', 'POST'])
+def results():
 
 	# Get default
 	example_list = ['AML001_CD34_6H:BRD-K43389675:10', 'AML001_PC3_6H:BRD-A19037878:0.37037', 'AML001_PC3_6H:BRD-A19037878:1.11111']
@@ -89,7 +99,7 @@ def analyze():
 	rids = request.form.get('rid_list', ','.join(example_list))
 
 	# Return JSON
-	return render_template('analyze.html', rids=rids)
+	return render_template('results.html', rids=rids)
 
 ##################################################
 ########## 2.2 APIs
@@ -103,7 +113,7 @@ def analyze():
 def metadata_api():
 	
 	# Read data
-	dataframe = pd.read_table('app/static/data/signature_metadata.txt')#.head(50)
+	dataframe = pd.read_table('app/static/data/signature_metadata.txt')#.head(50000)
 	dataframe['checkbox'] = ''
 
 	# Return JSON
