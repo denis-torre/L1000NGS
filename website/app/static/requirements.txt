@@ -1,0 +1,8 @@
+requests
+random
+string
+os
+pandas
+seaborn
+sklearn
+plotly

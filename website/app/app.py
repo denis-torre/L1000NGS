@@ -32,7 +32,7 @@ c.HTMLExporter.preprocessors = ['nbconvert.preprocessors.ExtractOutputPreprocess
 html_exporter_with_figs = HTMLExporter(config=c)
 
 ##### 2. Flask App #####
-entry_point = '/l1000ngs'
+entry_point = '/l1000ng'
 app = Flask(__name__, static_url_path='/app/static')
 
 ##### 3. Prefix middleware #####
@@ -155,7 +155,7 @@ def notebook_api():
 		ep = ExecutePreprocessor(timeout=600)#, kernel_name='venv')
 
 		# Execute
-		# ep.preprocess(notebook, {'metadata': {'path': '.'}})
+		ep.preprocess(notebook, {'metadata': {'path': '.'}})
 
 		# Convert
 		notebook_html = html_exporter_with_figs.from_notebook_node(notebook)[0]

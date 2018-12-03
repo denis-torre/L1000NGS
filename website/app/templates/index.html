@@ -5,19 +5,37 @@
 
 <!-- Head -->
 {% block head %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/slick-theme.css') }}">
+	<style>
+	#carousel .slick-arrow::before {
+		color: rgba(0,0,0,0.33);
+	}
+</style>
 {% endblock %}
 
 <!-- Content -->
 {% block content %}
-<div>
+<div class="medium light">
 
-	<!-- Step 2 -->
-	<div class="intro">
-		<div class="h2 light mb-3">Generate Interactive Notebooks from L1000 Data</div>
-		<div class="h5 light pr-5">The L1000 Notebook Generator is an interactive web application that allows users to produce customized, reusable interactive analysis notebook of L1000 signatures through a simple user interface.</div>
-		<div class="h5 light pr-5"></div>
-		<a class="btn btn-primary" href="{{ url_for('analyze') }}">Get Started</a>
+	<!-- Intro -->
+	<div class="h1 text-center light mb-3">Generate Interactive Notebooks from L1000 Data</div>
+	<hr width="100%">
+	<div class="intro row mt-5">
+		<div class="col-5">
+			<div id="carousel" class="my-auto">
+				{% for img in ['cluster', 'heatmap', 'pca'] %}
+					<img src="{{ url_for('static', filename='img/{}.png'.format(img)) }}">
+				{% endfor %}
+			</div>
+		</div>
+		<div class="col-7 text-center large px-5 mt-5">
+			<div>The <b>L1000 Notebook Generator</b> is web application that allows users to <b>generate customized, interactive notebooks</b> containing analyses of L1000 data.</div>
+			<div class="mt-4">Through an intuitive interface, users select the signatures they wish to analyze and then receive a complete, reusable notebook containing the results of the desired data.</div>
+			<div class="text-center mt-4"><a class="btn btn-primary px-3 py-2 large light" href="{{ url_for('analyze') }}">Get Started</a></div>
+		</div>
 	</div>
+
 
 </div>
 
@@ -26,67 +44,13 @@
 
 <!-- Footer -->
 {% block footer %}
+<script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
 <script>
-	// $(function(){
-
-		// Datatable
-		var SampleTable = $('#sample-table').DataTable({
-			"ajax": "{{ url_for('metadata_api') }}",
-			"columns": [
-				{"data": "checkbox", "orderable": false, "className": "select-checkbox"},
-				{"data": "pert_desc"},
-				{"data": "pert_id"},
-				{"data": "batch"},
-				{"data": "cell_id"},
-				{"data": "pert_dose"},
-				{"data": "pert_time"}
-			],
-			"select": {
-				"style": 'multi'
-			},
-			fnCreatedRow: function (nRow, aData, iDataIndex) {
-				$(nRow).attr('data-rid', aData['rid']); // or whatever you choose to set as the id
-			},
-			initComplete: function () {
-				this.api().columns().every(function () {
-					var column = this;
-					if (column.index() > 0) {
-						var select = $('<select style="max-width: 300px;"><option value=""></option></select>')
-							.appendTo($(column.footer()).empty())
-							.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-									$(this).val()
-								);
-
-								column
-									.search(val ? '^' + val + '$' : '', true, false)
-									.draw();
-							});
-
-						column.data().unique().sort().each(function (d, j) {
-							select.append('<option value="' + d + '">' + d + '</option>')
-						});
-					}
-				});
-			}
-		});
-
-		console.log(SampleTable.rows());
-		// Submit
-		analyze = function() {
-
-			// Get IDs
-			var ids = Array.from(SampleTable.rows({ selected: true }).data().map(function (data) { return data['rid'] }));
-
-			// Check length
-			if (ids.length < 3) {
-				alert('Please select at least three signatures using the checkboxes provided in the table.');
-			} else {
-				var $form = $('<form>', {'method': 'post', 'action': '{{ url_for("analyze") }}', 'class': 'd-none'}).html($('<input>', {'name': 'rid_list', 'type': 'hidden', 'value': ids.join(',')}));
-				$('body').append($form);
-				$form.submit();
-			}
-		}
-	// })
+	$('#carousel').slick({
+		infinite: true,
+		dots: true,
+		autoplay: true,
+		autoplaySpeed: 10000
+	});
 </script>
 {% endblock %}
