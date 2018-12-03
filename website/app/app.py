@@ -133,7 +133,7 @@ def notebook_api():
 		request_data = {'request_type': 'html', 'rids': 'AML001_CD34_6H:BRD-K43389675:10,AML001_PC3_6H:BRD-A19037878:0.37037,AML001_PC3_6H:BRD-A19037878:1.11111,AML001_PC3_6H:BRD-A19037878:10,AML001_PC3_6H:BRD-A19037878:3.33333'}
 
 	# Read notebook
-	notebook = nbf.read('app/static/notebooks/l1000ngs.ipynb', as_version=4)
+	notebook = nbf.read('app/static/notebooks/l1000ng.ipynb', as_version=4)
 
 	# Replace ids
 	notebook['cells'][0]['source'] = notebook['cells'][0]['source'].replace('{rid_list}', str(request_data['rids'].split(',')))
@@ -145,7 +145,7 @@ def notebook_api():
 		notebook_string = nbf.writes(notebook)
 
 		# Return
-		return Response(notebook_string, mimetype="text", headers={"Content-disposition": "attachment; filename=l1000ngs_notebook.ipynb"})
+		return Response(notebook_string, mimetype="text", headers={"Content-disposition": "attachment; filename=l1000ng_notebook.ipynb"})
 
 	# Return notebook
 	elif request_data['request_type'] == 'html':
