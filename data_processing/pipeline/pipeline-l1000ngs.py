@@ -29,8 +29,8 @@ import L1000Ngs as P
 ########## 2. General Setup
 #############################################
 ##### 1. Variables #####
-l1000fwd_file = 'rawdata.dir/CD_signatures_full_42809x22268.gctx'
-probe_metadata_file = 'rawdata.dir/Probes_full_metadata.csv'
+l1000fwd_file = 'rawdata.dir/CD_signatures_LM_42809x978.gctx'
+probe_metadata_file = 'rawdata.dir/Probes_L1000_metadata.csv'
 
 ##### 2. R Connection #####
 r.source('pipeline/scripts/l1000ngs.R')
