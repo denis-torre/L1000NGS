@@ -101,6 +101,21 @@ def results():
 	# Return JSON
 	return render_template('results.html', rids=rids)
 
+#############################################
+########## 4. Reusing Notebooks
+#############################################
+
+@app.route('/reusing_notebooks')
+def reusing_notebooks():
+
+	# RIDs
+	rids = ['AML001_CD34_6H:BRD-K43389675:10,AML001_PC3_6H:BRD-A19037878:0.37037,AML001_PC3_6H:BRD-A19037878:1.11111,AML001_PC3_6H:BRD-A19037878:10,AML001_PC3_6H:BRD-A19037878:3.33333']
+
+	# Requirements
+	requirements = ['jupyter', 'requests', 'random', 'string', 'os', 'pandas', 'seaborn', 'sklearn', 'plotly']
+
+	return render_template('reusing_notebooks.html', rids=rids, requirements=requirements)
+
 ##################################################
 ########## 2.2 APIs
 ##################################################

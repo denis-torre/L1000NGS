@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+<!-- Title -->
+{% block title %} L1000NG {% endblock %}
+
+<!-- Head -->
+{% block head %}
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+
+    <!-- Intro -->
+    <div class="mb-3 small">
+        <div class="very-large">
+            <b>Reusing Notebooks</b>
+            <button type="submit" form="download-form" target="_blank" class="btn btn-primary results float-right">Download Example Notebook</button>
+        </div>
+        <hr width="100%" class="mt-2 mb-3">
+    </div>
+
+
+    <div>
+        <!-- Text -->
+        <div class="medium">
+            <div>
+                All notebooks generated using the L1000 Notebook Generator can be downloaded and rerun on your local machine using a Jupyter Server.
+                To rerun a notebook, follow the steps below:
+            </div>
+            <ol class="mt-4">
+                <li>Install the <b>Python module requirements</b> (also available as a <a href="{{ url_for('static', filename='requirements.txt') }}" download>requirements.txt</a> file): 
+                    <ul>
+                        {% for requirement in requirements %}
+                            <li>{{ requirement }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                <li class="mt-4">Download the desired Jupyter notebook from the L1000 notebook generator web application. An example notebook is provided above. </li>
+                <li class="mt-4">Launch the Jupyter Server and navigate to the notebook.</li>
+
+            </ol>
+        </div>
+        <!-- Download Form -->
+        <form id="download-form" action="{{ url_for('notebook_api') }}" method="post">
+            <input name="request_type" type="hidden" value="ipynb">
+            <input name="rids" type="hidden" value="{{ rids }}">
+        </form>
+    </div>
+
+
+{% endblock %}
+
+<!-- Footer -->
+{% block footer %}
+{% endblock %}

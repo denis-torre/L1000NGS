@@ -45,7 +45,7 @@
     <!-- Loader Text -->
     <div id="example-text" class="position-sticky fixed-top text-center light pt-5 pb-5 intro-text">
         <div class="very-large mb-2">Your notebook will be ready shortly.</div>
-        <div class="medium">In the meantime, you may browse an example notebook below.</div>
+        <div class="medium">A link will be displayed below when the process is complete.</div>
         <i class="fas fa-spinner fa-spin fa-3x mt-4"></i>
         <button id="view-notebook" class="btn btn-primary d-none mt-4" onclick="display_results_iframe();">View Results</button>
     </div>
@@ -53,15 +53,15 @@
     <!-- Description -->
     <div id="description-text" class="intro-text medium light d-none">
         <div class="mb-2">Your notebook has been successfully generated and can be viewed below.</div>
-        <div class="mb-2">Optionally, <b>you may download the notebook</b> by clicking on the download button above. The notebook can be launched and customized on your local machine through a Jupyter Server with the following <a href="{{ url_for('static', filename='requirements.txt') }}" target="_blank">basic requirements</a>.</div>
+        <div class="mb-2">Optionally, <b>you may download the notebook</b> by clicking on the download button above. The notebook can be launched and customized on your local machine through a Jupyter Server. To get started follow <a href="{{ url_for('reusing_notebooks') }}">this guide</a>.</div>
     </div>
     
     
     <div id="notebook-wrapper">
 
         <!-- Example Notebook -->
-        <iframe id="example-iframe" src="{{ url_for('static', filename='notebooks/l1000ng-sample.html', _external=True) }}">
-        </iframe>
+        <!-- <iframe id="example-iframe" src="{{ url_for('static', filename='notebooks/l1000ng-sample.html', _external=True) }}">
+        </iframe> -->
 
         <!-- Results -->
         <iframe id="results-iframe" name="notebook-iframe" onload="display_results_button();" class="d-none">
