@@ -152,7 +152,10 @@ def notebook_api():
 		
 		# Initialize preprocess
 		print('executing...')
-		ep = ExecutePreprocessor(timeout=600)#, kernel_name='venv')
+		if os.environ.get('SECRET_KEY'):
+			ep = ExecutePreprocessor(timeout=600)#, kernel_name='venv')
+		else:
+			ep = ExecutePreprocessor(timeout=600, kernel_name='venv')
 
 		# Execute
 		ep.preprocess(notebook, {'metadata': {'path': '.'}})
